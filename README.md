@@ -31,11 +31,9 @@ MappingAce allows rapid creation of struct , Swift class, OC class . Automatic t
 ##### Raw struct 
 
 ```
-// usage 1
-// Struct did not implement the `Mapping` protocol
-// use MappingAny(type: _, fromDic: _)
 
-struct PhoneNumber {
+// It is recommend to implement protocol `Mapping`, and just implement `Mapping`, no more works
+struct PhoneNumber: Mapping{
 	var tel: String
 	var type: String
 }
@@ -44,21 +42,21 @@ let phoneInfo: [String : Any] = [
 	"tel": "186xxxxxxxx",
     "type": "work"
 ]
-let phone = MappingAny(type: PhoneEntity.self, fromDic: phoneInfo)
-        
+let phone = PhoneNumber(fromDic: phoneInfo)
+
 print(phone.tel) //"186xxxxxxxx"
 print(phone.type) //"work"
 
 
-// usage 2
-// Struct did confirm the `Mapping` protocol: use Struct(fromDic: _)
 
-struct PhoneNumber: Mapping{
-	...
+// Struct did not implement the `Mapping` protocol
+struct PhoneNumber {
+	var tel: String
+	var type: String
 }
-let phone = PhoneNumber(fromDic: phoneInfo)
 
-
+let phone = MappingAny(type: PhoneEntity.self, fromDic: phoneInfo)
+    
 ```
 ##### Nested struct mapping
 
