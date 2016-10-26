@@ -1,6 +1,6 @@
 
 <p align="center" >
-  <img src="./logo.svg" alt="MappingAce" title="MappingAce">
+  <img src="https://github.com/IcyButterfly/MappingAce/blob/master/logo.svg" alt="MappingAce" title="MappingAce">
 </p>
 
 
