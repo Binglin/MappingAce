@@ -228,7 +228,7 @@ $ pod install
 To integrate MappingAce into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "MappingAce/MappingAce" ~> 1.0.0
+github "IcyButterfly/MappingAce" ~> 1.0.0
 ```
 
 Run `carthage` to build the framework and drag the built `MappingAce.framework` into your Xcode project.
