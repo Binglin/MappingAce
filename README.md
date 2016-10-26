@@ -1,8 +1,6 @@
 
-<p align="center" >
-  <img src="https://github.com/IcyButterfly/MappingAce/blob/master/logo.svg" alt="MappingAce" title="MappingAce">
-</p>
 
+![MappingAce](https://github.com/IcyButterfly/MappingAce/blob/master/logo.png?raw=true)
 
 [![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://swift.org)
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/MappingAce.svg)](https://img.shields.io/cocoapods/v/MappingAce.svg)
@@ -13,18 +11,15 @@
 MappingAce allows rapid creation of struct , Swift class, OC class . Automatic transform dictionary to model(model could be struct), forget to manually write property mapping code
 
 
-- **  Features **
-
-  - struct
-  - class
-  - enum
-  - Nested Object
-  - Nested Array Object
-  - Subclassing
-  - optional property
-  
-  
 - [Usage](#usage)
+	- [JSON -> Model](#json-model) 
+		- [Raw struct ](#raw-struct)
+		- [Nested struct mapping](#nested-struct-mapping)
+		- [Optional property](#optional-property)
+		- [Enum](#enum)
+		- [Struct or class has default property value](#struct-or-class-has-default-property-value)
+	- [Model -> JSON](#model-json)
+		- just implement protocol `Serializable`
 - [Installation](#installation)
 
 
@@ -33,13 +28,7 @@ MappingAce allows rapid creation of struct , Swift class, OC class . Automatic t
 
 ### JSON -> Model
 
-
-  - struct
-  - class
-  - enum
-  - Nested Object
-  - optional property
-##### raw struct 
+##### Raw struct 
 
 ```
 // usage 1
@@ -71,7 +60,7 @@ let phone = PhoneNumber(fromDic: phoneInfo)
 
 
 ```
-##### nested struct mapping
+##### Nested struct mapping
 
 ```
 struct User{
@@ -96,7 +85,7 @@ let dic: [String : Any] = [
 let user = MappingAny(type: User.self, fromDic: dic)
 ```
 
-###### optional property
+###### Optional property
 ```
 struct User{
     var age: Int?
@@ -149,8 +138,9 @@ enum Gender: String, EnumString{
 ```
 
 
-### protocol:  InitMapping
-this protocol is designed for class or struct which property has default value
+### Struct or class has default property value   
+protocol:  InitMapping (Struct or Class)
+
 ```
 // struct
 struct User: InitMapping{
