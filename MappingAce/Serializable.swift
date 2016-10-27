@@ -9,29 +9,29 @@
 import Foundation
 
 public protocol Serializable{
-    func toDictionary() -> [String : Any]
-    func toNullableValueDictionary() -> [String : Any?]
+    func toDictionary() -> [String : AnyObject]
+    func toNullableValueDictionary() -> [String : AnyObject?]
 }
 
 public extension Serializable{
     
-    func toDictionary() -> [String : Any]{
+    func toDictionary() -> [String : AnyObject]{
        
-        let structInfo = MetadataInfoFor(type: Self.self)
+        let structInfo = MetadataInfoFor(Self.self)
         
-        var rawPointer: UnsafeRawPointer
+        var rawPointer: UnsafeMutablePointer<UInt8>
         
-        if structInfo.kind == .struct{
+        if structInfo.kind == .`struct`{
             var toSerialize = self
-            let selfPointer = withUnsafePointer(to: &toSerialize, {$0})
-            rawPointer  = UnsafeRawPointer(selfPointer)
+            let selfPointer = withUnsafePointer(&toSerialize, {$0})
+            rawPointer  = UnsafeMutablePointer(selfPointer)
         }else{
-            let opaquePointer = Unmanaged.passUnretained(self as AnyObject).toOpaque()
-            rawPointer = unsafeBitCast(opaquePointer, to: UnsafeRawPointer.self)
+            let opaquePointer = Unmanaged.passUnretained(self as! AnyObject).toOpaque()
+            rawPointer = UnsafeMutablePointer(opaquePointer)
         }
         
         
-        var result = [String : Any]()
+        var result = [String : AnyObject]()
         
         for i in 0..<structInfo.propertyNames.count{
             
@@ -40,9 +40,9 @@ public extension Serializable{
             let pType = structInfo.propertyTypes[i]
             
             if let type = pType as? ValueMapping.Type{
-                let currentPointer = rawPointer.advanced(by: poffs)
+                let currentPointer = rawPointer.advancedBy(poffs)
                 if let value = type.fetchValue(fromPointer: currentPointer){
-                    result.updateValue(value, forKey: pName)
+                    result.updateValue(value as! AnyObject, forKey: pName)
                 }
             }else{
                 fatalError("not implement for serialize for type: \(pType)")
@@ -52,22 +52,22 @@ public extension Serializable{
         return result
     }
     
-    func toNullableValueDictionary() -> [String : Any?]{
+    func toNullableValueDictionary() -> [String : AnyObject?]{
         
-        let structInfo = MetadataInfoFor(type: Self.self)
+        let structInfo = MetadataInfoFor(Self.self)
         
-        var rawPointer: UnsafeRawPointer
+        var rawPointer: UnsafeMutablePointer<UInt8>
         
-        if structInfo.kind == .struct{
+        if structInfo.kind == .`struct`{
             var toSerialize = self
-            let selfPointer = withUnsafePointer(to: &toSerialize, {$0})
-            rawPointer  = UnsafeRawPointer(selfPointer)
+            let selfPointer = withUnsafePointer(&toSerialize, {$0})
+            rawPointer  = UnsafeMutablePointer(selfPointer)
         }else{
-            let opaquePointer = Unmanaged.passUnretained(self as AnyObject).toOpaque()
-            rawPointer = unsafeBitCast(opaquePointer, to: UnsafeRawPointer.self)
+            let opaquePointer = Unmanaged.passUnretained(self as! AnyObject).toOpaque()
+            rawPointer = UnsafeMutablePointer(opaquePointer)
         }
         
-        var result = [String : Any]()
+        var result = [String : AnyObject?]()
         
         for i in 0..<structInfo.propertyNames.count{
             
@@ -76,9 +76,9 @@ public extension Serializable{
             let pType = structInfo.propertyTypes[i]
             
             if let type = pType as? ValueMapping.Type{
-                let currentPointer = rawPointer.advanced(by: poffs)
+                let currentPointer = rawPointer.advancedBy(poffs)
                 let value = type.fetchValue(fromPointer: currentPointer)
-                result.updateValue(value, forKey: pName)
+                result.updateValue(value as! AnyObject, forKey: pName)
             }else{
                 fatalError("not implement for serialize for type: \(pType)")
             }

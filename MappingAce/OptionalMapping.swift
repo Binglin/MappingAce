@@ -16,7 +16,7 @@ extension Optional: ValueMapping{
         if let value = any{
             
             if let type = Wrapped.self as? ValueMapping.Type{
-                return type.mappingWith(any: value)
+                return type.mappingWith(value)
             }
         }
         return nil
@@ -38,23 +38,22 @@ extension Optional: ValueMapping{
 
 extension Optional: Initializable{
     
-    public static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
+    public static func initialize(pointer: UnsafeMutablePointer<UInt8>, offset: Int, value: Any?){
         
-        let p = pointer.advanced(by: offset)
-        let mapped = self.mappingWith(any: value)
-        
-        let bind = p.bindMemory(to: Optional<Wrapped>.self, capacity: 1)
-        bind.initialize(to: mapped as? Wrapped)
+        let p = pointer.advancedBy(offset)
+        let mapped = self.mappingWith(value)
+        let bind: UnsafeMutablePointer<Optional<Wrapped>> = UnsafeMutablePointer(p)
+        bind.initialize(mapped as? Wrapped)
     }
 }
 
 extension Optional: Updatable{
     
-    public static func update(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
-        let p = pointer.advanced(by: offset)
-        let mapped = self.mappingWith(any: value)
+    public static func update(pointer: UnsafeMutablePointer<UInt8>, offset: Int, value: Any?){
+        let p = pointer.advancedBy(offset)
+        let mapped = self.mappingWith(value)
         
-        let bind = p.bindMemory(to: Optional<Wrapped>.self, capacity: 1)
-        bind.pointee = mapped as? Wrapped
+        let bind: UnsafeMutablePointer<Optional<Wrapped>> = UnsafeMutablePointer(p)
+        bind.memory = mapped as? Wrapped
     }
 }

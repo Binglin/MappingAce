@@ -16,19 +16,26 @@ enum MetadataKind {
 }
  
 struct ObjectMetadata {
-    public var kind: MetadataKind
-    public var propertyNames: [String]
-    public var propertyTypes: [Any.Type]
-    public var propertyOffsets: [Int]
+    var kind: MetadataKind
+    var propertyNames: [String]
+    var propertyTypes: [Any.Type]
+    var propertyOffsets: [Int]
 }
 
 
 func MetadataInfoFor(type: Any.Type) -> ObjectMetadata{
     
-    let typePointer = unsafeBitCast(type, to: UnsafePointer<Struct>.self)
+    let typePointer = unsafeBitCast(type, UnsafePointer<Struct>.self)
     //print(type, "pointer is", typePointer)
-    let typeStruct = typePointer.pointee
+    let typeStruct = typePointer.memory
     let kind = typeStruct.kind
+    
+    let int8P: UnsafePointer<UInt8> = UnsafePointer(typePointer)
+    for i in 0..<20{
+        print("\(i)", int8P.advancedBy(i).memory)
+    }
+    
+    print(type, "meta info :", typeStruct)
     
     struct TypeInfoHashTable{
         static var table: [UnsafePointer<Struct> : ObjectMetadata] = [:]
@@ -39,7 +46,7 @@ func MetadataInfoFor(type: Any.Type) -> ObjectMetadata{
     }
 
     if kind == 1{
-        let info = nominalTypeOfStruct(typePointer: typePointer)
+        let info = nominalTypeOfStruct(typePointer)
         TypeInfoHashTable.table[typePointer] = info
         return info
     }
@@ -58,39 +65,49 @@ func MetadataInfoFor(type: Any.Type) -> ObjectMetadata{
 
 private func nominalTypeOfStruct(typePointer: UnsafePointer<Struct>) -> ObjectMetadata{
     
-    let intPointer = unsafeBitCast(typePointer, to: UnsafePointer<Int>.self)
+    let intPointer: UnsafePointer<Int> = UnsafePointer(typePointer)
     
-    let nominalTypeBase = intPointer.advanced(by: 1)
-    let int8Type = unsafeBitCast(nominalTypeBase, to: UnsafePointer<Int8>.self)
-    let nominalTypePointer = int8Type.advanced(by: typePointer.pointee.nominalTypeDescriptorOffset)
+    let nominalTypeBase = intPointer.advancedBy(1)
+    
+    let int8Type: UnsafePointer<UInt8> = UnsafePointer(nominalTypeBase)
+    
+    let nominalTypePointer = int8Type.advancedBy(Int(typePointer.memory.nominalTypeDescriptorOffset))
+    
+    for i in 0..<20{
+        print("\(i)", int8Type.advancedBy(i).memory)
+    }
+    
+    let nominalType: UnsafePointer<NominalTypeDescriptor> = UnsafePointer(nominalTypePointer)
+    
+    print(nominalType, nominalType.memory)
+    
+    print(nominalType.memory)
+    
+    let numberOfField = Int(nominalType.memory.numberOfFields)
     
     
-    let nominalType = unsafeBitCast(nominalTypePointer, to: UnsafePointer<NominalTypeDescriptor>.self)
-    let numberOfField = Int(nominalType.pointee.numberOfFields)
+    let int32NominalType = unsafeBitCast(nominalType, UnsafePointer<Int32>.self)
+    let fieldBase = int32NominalType.advancedBy(Int(nominalType.memory.FieldOffsetVectorOffset))
     
+    let int8FieldBasePointer = unsafeBitCast(fieldBase, UnsafePointer<Int8>.self)
+    let fieldNamePointer = int8FieldBasePointer.advancedBy(Int(nominalType.memory.fieldNames))
     
-    let int32NominalType = unsafeBitCast(nominalType, to: UnsafePointer<Int32>.self)
-    let fieldBase = int32NominalType.advanced(by: Int(nominalType.pointee.FieldOffsetVectorOffset))
+    let fieldNames = getFieldNames(fieldNamePointer, fieldCount: numberOfField)
     
-    let int8FieldBasePointer = unsafeBitCast(fieldBase, to: UnsafePointer<Int8>.self)
-    let fieldNamePointer = int8FieldBasePointer.advanced(by: Int(nominalType.pointee.fieldNames))
-    
-    let fieldNames = getFieldNames(pointer: fieldNamePointer, fieldCount: numberOfField)
-    
-    let int32NominalFunc = unsafeBitCast(nominalType, to: UnsafePointer<Int32>.self).advanced(by: 4)
-    let nominalFunc = unsafeBitCast(int32NominalFunc, to: UnsafePointer<Int8>.self).advanced(by: Int(nominalType.pointee.getFieldTypes))
+    let int32NominalFunc = unsafeBitCast(nominalType, UnsafePointer<Int32>.self).advancedBy(4)
+    let nominalFunc = unsafeBitCast(int32NominalFunc, UnsafePointer<Int8>.self).advancedBy(Int(nominalType.memory.getFieldTypes))
     
     let fieldType = getType(pointer: nominalFunc, fieldCount: numberOfField)
     
-    let offsetPointer = intPointer.advanced(by: Int(nominalType.pointee.FieldOffsetVectorOffset))
+    let offsetPointer = intPointer.advancedBy(Int(nominalType.memory.FieldOffsetVectorOffset))
     var offsetArr: [Int] = []
     
     for i in 0..<numberOfField {
-        let offset = offsetPointer.advanced(by: i)
-        offsetArr.append(offset.pointee)
+        let offset = offsetPointer.advancedBy(i)
+        offsetArr.append(offset.memory)
     }
     
-    let info = ObjectMetadata(kind: .struct,propertyNames: fieldNames, propertyTypes: fieldType, propertyOffsets: offsetArr)
+    let info = ObjectMetadata(kind: .`struct`,propertyNames: fieldNames, propertyTypes: fieldType, propertyOffsets: offsetArr)
     return info
 }
 
@@ -98,14 +115,14 @@ private func nominalTypeOfStruct(typePointer: UnsafePointer<Struct>) -> ObjectMe
 
 private func getType(pointer nominalFunc: UnsafePointer<Int8>, fieldCount numberOfField: Int) -> [Any.Type]{
         
-    let funcPointer = unsafeBitCast(nominalFunc, to: FieldsTypeAccessor.self)
-    let funcBase = funcPointer(unsafeBitCast(nominalFunc, to: UnsafePointer<Int>.self))
+    let funcPointer = unsafeBitCast(nominalFunc, FieldsTypeAccessor.self)
+    let funcBase = funcPointer(unsafeBitCast(nominalFunc, UnsafePointer<Int>.self))
     
     
     var types: [Any.Type] = []
     for i in 0..<numberOfField {
-        let typeFetcher = funcBase.advanced(by: i).pointee
-        let type = unsafeBitCast(typeFetcher, to: Any.Type.self)
+        let typeFetcher = funcBase.advancedBy(i).memory
+        let type = unsafeBitCast(typeFetcher, Any.Type.self)
         types.append(type)
     }
     
@@ -122,68 +139,69 @@ private func getFieldNames(pointer: UnsafePointer<Int8>, fieldCount numberOfFiel
 
 private func nominalTypeOfClass(typePointer t: UnsafePointer<Struct>) -> ObjectMetadata{
     
-    let typePointer = unsafeBitCast(t, to: UnsafePointer<NominalTypeDescriptor.Class>.self)
+    let typePointer = unsafeBitCast(t, UnsafePointer<NominalTypeDescriptor.Class>.self)
     return nominalTypeOf(pointer: typePointer)
     
 }
 
 private func nominalTypeOf(pointer typePointer: UnsafePointer<NominalTypeDescriptor.Class>) -> ObjectMetadata{
     
-    let intPointer = unsafeBitCast(typePointer, to: UnsafePointer<Int>.self)
+    let intPointer = unsafeBitCast(typePointer, UnsafePointer<Int>.self)
     
-    let typePointee = typePointer.pointee
+    let typePointee = typePointer.memory
     let superPointee = typePointee.super_
     
     var superObject: ObjectMetadata
     
-    if unsafeBitCast(typePointer.pointee.isa, to: Int.self) == 14 || unsafeBitCast(superPointee, to: Int.self) == 0{
+    if unsafeBitCast(typePointer.memory.isa, Int.self) == 14 || unsafeBitCast(superPointee, Int.self) == 0{
         superObject = ObjectMetadata(kind: .ObjCClassWrapper, propertyNames: [], propertyTypes: [], propertyOffsets: [])
         return superObject
     }else{
         superObject = nominalTypeOf(pointer: superPointee)
-        superObject.kind = .class
+        superObject.kind = .`class`
     }
     
-    let nominalTypeOffset = (MemoryLayout<Int>.size == MemoryLayout<Int64>.size) ? 8 : 11
-    let nominalTypeInt = intPointer.advanced(by: nominalTypeOffset)
     
-    let nominalTypeint8 = unsafeBitCast(nominalTypeInt, to: UnsafePointer<Int8>.self)
-    let des = nominalTypeint8.advanced(by: typePointee.Description)
+    let nominalTypeOffset = (sizeof(Int.self) == sizeof(Int64.self)) ? 8 : 11
+    let nominalTypeInt = intPointer.advancedBy(nominalTypeOffset)
     
-    let nominalType = unsafeBitCast(des, to: UnsafePointer<NominalTypeDescriptor>.self)
+    let nominalTypeint8 = unsafeBitCast(nominalTypeInt, UnsafePointer<Int8>.self)
+    let des = nominalTypeint8.advancedBy(typePointee.Description)
     
-    let numberOfField = Int(nominalType.pointee.numberOfFields)
+    let nominalType = unsafeBitCast(des, UnsafePointer<NominalTypeDescriptor>.self)
     
-    let int32NominalType = unsafeBitCast(nominalType, to: UnsafePointer<Int32>.self)
-    let fieldBase = int32NominalType.advanced(by: 3)//.advanced(by: Int(nominalType.pointee.FieldOffsetVectorOffset))
+    let numberOfField = Int(nominalType.memory.numberOfFields)
     
-    let int8FieldBasePointer = unsafeBitCast(fieldBase, to: UnsafePointer<Int8>.self)
-    let fieldNamePointer = int8FieldBasePointer.advanced(by: Int(nominalType.pointee.fieldNames))
+    let int32NominalType = unsafeBitCast(nominalType, UnsafePointer<Int32>.self)
+    let fieldBase = int32NominalType.advancedBy(3)
     
-    let fieldNames = getFieldNames(pointer: fieldNamePointer, fieldCount: numberOfField)
-    superObject.propertyNames.append(contentsOf: fieldNames)
+    let int8FieldBasePointer = unsafeBitCast(fieldBase, UnsafePointer<Int8>.self)
+    let fieldNamePointer = int8FieldBasePointer.advancedBy(Int(nominalType.memory.fieldNames))
     
-    let int32NominalFunc = unsafeBitCast(nominalType, to: UnsafePointer<Int32>.self).advanced(by: 4)
-    let nominalFunc = unsafeBitCast(int32NominalFunc, to: UnsafePointer<Int8>.self).advanced(by: Int(nominalType.pointee.getFieldTypes))
+    let fieldNames = getFieldNames(fieldNamePointer, fieldCount: numberOfField)
+    superObject.propertyNames.appendContentsOf(fieldNames)
+    
+    let int32NominalFunc = unsafeBitCast(nominalType, UnsafePointer<Int32>.self).advancedBy(4)
+    let nominalFunc = unsafeBitCast(int32NominalFunc, UnsafePointer<Int8>.self).advancedBy(Int(nominalType.memory.getFieldTypes))
     
     let fieldType = getType(pointer: nominalFunc, fieldCount: numberOfField)
-    superObject.propertyTypes.append(contentsOf: fieldType)
+    superObject.propertyTypes.appendContentsOf(fieldType)
     
-    let offsetPointer = intPointer.advanced(by: Int(nominalType.pointee.FieldOffsetVectorOffset))
+    let offsetPointer = intPointer.advancedBy(Int(nominalType.memory.FieldOffsetVectorOffset))
     var offsetArr: [Int] = []
     
     for i in 0..<numberOfField {
-        let offset = offsetPointer.advanced(by: i)
-        offsetArr.append(offset.pointee)
+        let offset = offsetPointer.advancedBy(i)
+        offsetArr.append(offset.memory)
     }
-    superObject.propertyOffsets.append(contentsOf: offsetArr)
+    superObject.propertyOffsets.appendContentsOf(offsetArr)
     
     return superObject
 }
  
  
 protocol UTF8Initializable {
-    init?(validatingUTF8: UnsafePointer<CChar>)
+    init?(UTF8String: UnsafePointer<CChar>)
 }
 
 extension String : UTF8Initializable {}
@@ -193,13 +211,13 @@ extension Array where Element : UTF8Initializable {
     init(utf8Strings: UnsafePointer<CChar>) {
         var strings = [Element]()
         var p = utf8Strings
-        while let string = Element(validatingUTF8: p) {
+        while let string = Element(UTF8String: p) {
             strings.append(string)
-            while p.pointee != 0 {
-                p = p.advanced(by: 1)
+            while p.memory != 0 {
+                p = p.advancedBy(1)
             }
-            p = p.advanced(by: 1)
-            guard p.pointee != 0 else { break }
+            p = p.advancedBy(1)
+            guard p.memory != 0 else { break }
         }
         self = strings
     }

@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import Mapping
+@testable import MappingAce
 
 private struct User: Serializable{
     var age: Int?
@@ -34,7 +35,7 @@ class SwiftStructNullableTests: XCTestCase {
     
     func testAllNilExample() {
         
-        let user = MappingAny(type: User.self, fromDic: [:])
+        let user = MappingAny(User.self, fromDic: [:])
         let dic = user.toDictionary()
         print(dic)
         
@@ -54,7 +55,7 @@ class SwiftStructNullableTests: XCTestCase {
             "name": "Binglin",
         ]
         
-        let user = MappingAny(type: User.self, fromDic: dic)
+        let user = MappingAny(User.self, fromDic: dic)
         
         XCTAssertEqual(user.age, nil)
         XCTAssertEqual(user.name, "Binglin")
@@ -65,12 +66,12 @@ class SwiftStructNullableTests: XCTestCase {
     
     func testPhoneNotNilExample(){
         
-        let dic: [String : Any] = [
+        let dic: [String : AnyObject] = [
             "name": "Binglin",
             "phone": ["tel" : "xxx", "type": "work"]
         ]
         
-        let user = MappingAny(type: User.self, fromDic: dic)
+        let user = MappingAny(User.self, fromDic: dic)
         
         let serialized = user.toDictionary()
         XCTAssertEqual(dic as NSDictionary, serialized as NSDictionary)

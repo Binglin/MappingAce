@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import Mapping
+@testable import MappingAce
 
 private struct User: Mapping{
     var age: Int
@@ -48,7 +49,7 @@ class SwiftStructNonilTests: XCTestCase {
             "type": "work"
         ]
         
-        let phone = MappingAny(type: PhoneEntity.self, fromDic: phoneInfo)
+        let phone = MappingAny(PhoneEntity.self, fromDic: phoneInfo)
         
         XCTAssertEqual(phone.tel, "186xxxxxxxx")
         XCTAssertEqual(phone.type, "work")
@@ -57,7 +58,7 @@ class SwiftStructNonilTests: XCTestCase {
     
     func testStructMapping(){
         
-        let phoneInfo: [String : Any] = [
+        let phoneInfo: [String : AnyObject] = [
             "tel": "186xxxxxxxx",
             "type": "work"
         ]
@@ -74,18 +75,18 @@ class SwiftStructNonilTests: XCTestCase {
     
     func testEmbedMappingExample() {
         
-        let phone: [String : Any] = [
+        let phone: [String : AnyObject] = [
             "tel": "186xxxxxxxx",
             "type": "work"
         ]
         
-        let dic: [String : Any] = [
+        let dic: [String : AnyObject] = [
             "age" : 24,
             "name": "Binglin",
             "phone": phone
         ]
         
-        let user = MappingAny(type: User.self, fromDic: dic)
+        let user = MappingAny(User.self, fromDic: dic)
         let userDic  = user.toDictionary()
         
         XCTAssertEqual(dic as NSDictionary, userDic as NSDictionary)
@@ -109,7 +110,7 @@ class SwiftStructNonilTests: XCTestCase {
             "phone": phone
         ]
         
-        let user = MappingAny(type: User.self, fromDic: dic)
+        let user = MappingAny(User.self, fromDic: dic)
         
         XCTAssertEqual(user.age, 24)
         XCTAssertEqual(user.name, "Binglin")
@@ -130,12 +131,12 @@ class SwiftStructNonilTests: XCTestCase {
         }
         
         
-        let dicGender1: [String : Any] = [
+        let dicGender1: [String : AnyObject] = [
             "name": "Binglin",
             "gender": 1
         ]
         
-        let dicGender2: [String : Any] = [
+        let dicGender2: [String : AnyObject] = [
             "name": "Binglin",
             "gender": 2
         ]
@@ -167,12 +168,12 @@ class SwiftStructNonilTests: XCTestCase {
         }
         
         
-        let dicGender1: [String : Any] = [
+        let dicGender1: [String : AnyObject] = [
             "name": "Binglin",
             "gender": "m"
         ]
         
-        let dicGender2: [String : Any] = [
+        let dicGender2: [String : AnyObject] = [
             "name": "Binglin",
             "gender": "f"
         ]
@@ -229,9 +230,6 @@ class SwiftStructNonilTests: XCTestCase {
     
     func testArrayMappingExample(){
         
-        let v = Optional<Bool>.none.serializedValue()
-        //XCTAssertEqual(v, nil)
-        
         struct UserArrayPhoneEntity: Mapping{
             var age: Int
             var name: String
@@ -241,13 +239,13 @@ class SwiftStructNonilTests: XCTestCase {
         }
         
         
-        let phone: [String : Any] = [
+        let phone: [String : AnyObject] = [
             "tel": "186xxxxxxxx",
             "type": "work"
         ]
         
-        let phones = Array(repeating: phone, count: 10)
-        let dic: [String : Any] = [
+        let phones = Array.init(count: 10, repeatedValue: phone)
+        let dic: [String : AnyObject] = [
             "age" : 24,
             "name": "Binglin",
             "phones": phones,
@@ -273,13 +271,13 @@ class SwiftStructNonilTests: XCTestCase {
         }
         
         
-        let phone: [String : Any] = [
+        let phone: [String : AnyObject] = [
             "tel": "186xxxxxxxx",
             "type": "work"
         ]
         
-        let phones = Array(repeating: phone, count: 10)
-        let dic: [String : Any] = [
+        let phones = Array.init(count: 10, repeatedValue: phone)
+        let dic: [String : AnyObject] = [
             "age" : 24,
             "name": "Binglin",
             "phones": phones
@@ -339,7 +337,7 @@ class SwiftStructNonilTests: XCTestCase {
             var float: Float
             var double: Double
             
-            var timeInterval: TimeInterval
+            var timeInterval: NSTimeInterval
         }
         
         
@@ -367,7 +365,7 @@ class SwiftStructNonilTests: XCTestCase {
         struct A: KeyMapping{
             var int: Int
             
-            fileprivate static func mappedKeyFor(key: String) -> String? {
+            private static func mappedKeyFor(key: String) -> String? {
                 if key == "int" {
                     return "a.b.c"
                 }
@@ -376,7 +374,7 @@ class SwiftStructNonilTests: XCTestCase {
         }
         
         let dic : [String : Any] = ["a" : ["b": ["c": 1]]]
-        let keyPathA = MappingAny(type: A.self, fromDic: dic)
+        let keyPathA = MappingAny(A.self, fromDic: dic)
         
         XCTAssertEqual(keyPathA.int, 1)
     }
@@ -396,9 +394,9 @@ class SwiftStructNonilTests: XCTestCase {
             "phone": phone
         ]
         
-        self.measure {
+        self.measureBlock {
             for _ in 0..<10000{
-                _ = MappingAny(type: User.self, fromDic: dic)
+                _ = MappingAny(User.self, fromDic: dic)
             }
         }
     }
@@ -417,8 +415,7 @@ class SwiftStructNonilTests: XCTestCase {
             "phone": phone
         ]
         
-        
-        self.measure {
+        self.measureBlock {
             
             for _ in 0..<10000{
                 

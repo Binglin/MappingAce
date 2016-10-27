@@ -19,7 +19,7 @@ public protocol InitMapping: ValueMapping, Updatable, Serializable {
 public extension InitMapping{
     public init(fromDic d: [String : Any]){
         var item = Self.init()
-        item.mapFrom(dic: d)
+        item.mapFrom(d)
         self = item
     }
 }
@@ -37,25 +37,28 @@ extension InitMapping{
         return self.toDictionary()
     }
     
-    fileprivate mutating func mapFrom(dic: [String : Any]){
+    private mutating func mapFrom(dic: [String : Any]){
         
-        let structInfo = MetadataInfoFor(type: Self.self)
+        let structInfo = MetadataInfoFor(Self.self)
         
-        if structInfo.kind == .class {
+        if structInfo.kind == .`class` {
             
-            let opaquePointer = Unmanaged.passUnretained(self as AnyObject).toOpaque()
-            self.updateValue(rawPointer: opaquePointer, withDic: dic, structInfo: structInfo)
+            let opaquePointer = Unmanaged.passUnretained(self as! AnyObject).toOpaque()
+            let int8Pointer   = unsafeBitCast(opaquePointer, UnsafeMutablePointer<UInt8>.self)
+            self.updateValue(rawPointer: int8Pointer, withDic: dic, structInfo: structInfo)
         }
         //structInfo.kind == .struct
         else{
             
-            let selfPointer = withUnsafePointer(to: &self, {$0})
-            let p = UnsafeMutableRawPointer(mutating: selfPointer)
+            
+            let selfPointer = withUnsafePointer(&self, {$0})
+            
+            let p: UnsafeMutablePointer<UInt8> = UnsafeMutablePointer(selfPointer)
             self.updateValue(rawPointer: p, withDic: dic, structInfo: structInfo)
         }
     }
     
-    private func updateValue(rawPointer p: UnsafeMutableRawPointer, withDic dic: [String : Any], structInfo: ObjectMetadata){
+    private func updateValue(rawPointer p: UnsafeMutablePointer<UInt8>, withDic dic: [String : Any], structInfo: ObjectMetadata){
        
         for i in 0..<structInfo.propertyNames.count{
             
@@ -63,10 +66,10 @@ extension InitMapping{
             let pType = structInfo.propertyTypes[i]
             let pOffs = structInfo.propertyOffsets[i]
             
-            let dicValue = valueFor(propertyName: pName, fromDic: dic, type: Self.self)
+            let dicValue = valueFor(pName, fromDic: dic, type: Self.self)
                 //dic[pName]
             
-            if !(pType is ExpressibleByNilLiteral.Type) && dicValue == nil{
+            if !(pType is NilLiteralConvertible.Type) && dicValue == nil{
                 continue
             }
             
@@ -76,7 +79,7 @@ extension InitMapping{
             
             
             if let value = dicValue{
-               type.update(pointer: p, offset: pOffs, value: value)
+               type.update(p, offset: pOffs, value: value)
             }
         }
     }

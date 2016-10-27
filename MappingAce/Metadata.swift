@@ -14,8 +14,8 @@ struct Metadata {
 }
 
 struct Struct {
-    var kind: Int
-    var nominalTypeDescriptorOffset: Int
+    var kind: UInt
+    var nominalTypeDescriptorOffset: UInt
     var parent: Metadata?
 }
 
@@ -57,7 +57,7 @@ extension NominalTypeDescriptor{
         var Description : Int
         
         static var nominalTypeOffset: Int{
-            return (MemoryLayout<Int>.size == MemoryLayout<Int64>.size) ? 8 : 11
+            return (sizeof(Int.self) == sizeof(Int64.self)) ? 8 : 11
         }
     }
 }

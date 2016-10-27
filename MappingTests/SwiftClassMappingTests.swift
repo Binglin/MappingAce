@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import Mapping
+@testable import MappingAce
 
 class SwiftClassMappingTests: XCTestCase {
     
@@ -129,7 +130,7 @@ class SwiftClassMappingTests: XCTestCase {
         }
 
 
-        let studentInfo: [String : Any] = [
+        let studentInfo: [String : AnyObject] = [
             "name" : "Binglin",
             "age" : 18,
             "grade" : 9

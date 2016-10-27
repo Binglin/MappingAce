@@ -33,17 +33,13 @@ class ViewController: UIViewController {
             "type": "work"
         ]
         
-        let phones = Array(repeating: phone, count: 10)
+        let phones = Array.init(count: 10, repeatedValue: phone)
         let dic: [String : Any] = [
             "age" : 14.0,
             "name": "Binglin",
             "phone": phone,
             "phones": phones
         ]
-        
-        let age = dic["age"]!
-        print(type(of: age))
-        
         
         for _ in 0..<150{
 //            DispatchQueue.global().async {

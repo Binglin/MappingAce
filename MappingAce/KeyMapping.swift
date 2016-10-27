@@ -24,17 +24,17 @@ protocol KeyMapping {
 /// - returns:
 func valueFor(propertyName: String, fromDic d: [String : Any], type: Any.Type) -> Any?{
     
-    if let value = valueFor(keyPath: propertyName, fromDic: d){
+    if let value = valueFor(propertyName, fromDic: d){
         return value
     }
     
     /// 如果没有key映射 或者无对应key映射的值
-    guard let t = type as? KeyMapping.Type , let mappedKey = t.mappedKeyFor(key: propertyName) else{
+    guard let t = type as? KeyMapping.Type , let mappedKey = t.mappedKeyFor(propertyName) else{
         return nil
     }
     
     /// 有key映射值
-    return valueFor(keyPath: mappedKey, fromDic: d)
+    return valueFor(mappedKey, fromDic: d)
 }
 
 func valueFor(keyPath: String, fromDic d: [String : Any]) -> Any? {
@@ -46,7 +46,7 @@ func valueFor(keyPath: String, fromDic d: [String : Any]) -> Any? {
     }
     
     /// keyPath
-    let seperatedStr = keyPath.components(separatedBy: ".")
+    let seperatedStr = keyPath.componentsSeparatedByString(".")
     
     if seperatedStr.count > 1 {
         

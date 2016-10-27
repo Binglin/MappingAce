@@ -8,7 +8,7 @@
 
 import XCTest
 @testable import Mapping
-
+@testable import MappingAce
 
 class NumericalConvertTests: XCTestCase {
     
@@ -48,7 +48,7 @@ class NumericalConvertTests: XCTestCase {
         
         let timeintervalDic: [String : Any] = ["timeinterval" : 1]
         if let timeinterval = timeintervalDic["timeinterval"] as? NSNumber{
-            let astimeinterval = timeinterval as TimeInterval
+            let astimeinterval = timeinterval as NSTimeInterval
             XCTAssertTrue(astimeinterval == 1)
         }else{
             XCTFail("此路不通")
@@ -58,29 +58,29 @@ class NumericalConvertTests: XCTestCase {
     
     func testBoolExample() {
 
-        let boolStringTrue = Bool.mappingWith(any: "true") as! Bool
+        let boolStringTrue = Bool.mappingWith("true") as! Bool
         XCTAssertEqual(boolStringTrue, true)
         
-        let boolStringFalse = Bool.mappingWith(any: "false") as! Bool
+        let boolStringFalse = Bool.mappingWith("false") as! Bool
         XCTAssertEqual(boolStringFalse, false)
         
-        let boolStringUpcaseTrue = Bool.mappingWith(any: "True") as! Bool
+        let boolStringUpcaseTrue = Bool.mappingWith("True") as! Bool
         XCTAssertEqual(boolStringUpcaseTrue, true)
         
         
-        let boolBoolTrue = Bool.mappingWith(any: true) as! Bool
+        let boolBoolTrue = Bool.mappingWith(true) as! Bool
         XCTAssertEqual(boolBoolTrue, true)
         
-        let boolBoolFalse = Bool.mappingWith(any: false) as! Bool
+        let boolBoolFalse = Bool.mappingWith(false) as! Bool
         XCTAssertEqual(boolBoolFalse, false)
         
-        let boolInt0 = Bool.mappingWith(any: 0) as! Bool
+        let boolInt0 = Bool.mappingWith(0) as! Bool
         XCTAssertEqual(boolInt0, false)
         
-        let boolInt1 = Bool.mappingWith(any: 1) as! Bool
+        let boolInt1 = Bool.mappingWith(1) as! Bool
         XCTAssertEqual(boolInt1, true)
         
-        let boolInt10 = Bool.mappingWith(any: 10) as! Bool
+        let boolInt10 = Bool.mappingWith(10) as! Bool
         XCTAssertEqual(boolInt10, true)
         
         
@@ -96,11 +96,11 @@ class NumericalConvertTests: XCTestCase {
     
     func testSwiftBoolFunc(){
         
-        let boolfalseString = Bool.init("false")
-        let booltrueString  = Bool.init("true")
+        let boolfalseString = Bool.init(text: "false")
+        let booltrueString  = Bool.init(text: "true")
         
-        let boolInt0 = Bool.init("0")
-        let boolInt1 = Bool.init("1")
+        let boolInt0 = Bool.init(text: "0")
+        let boolInt1 = Bool.init(text: "1")
         
         print(boolfalseString, booltrueString, boolInt0, boolInt1)
     }

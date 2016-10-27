@@ -17,7 +17,7 @@ extension Array: ValueMapping{
             
             var result = [Element]()
             for i in 0..<value.count{
-                result.append(elementType.mappingWith(any: value[i]) as! Element)
+                result.append(elementType.mappingWith(value[i]) as! Element)
             }
             return result
             
@@ -25,39 +25,38 @@ extension Array: ValueMapping{
         return any
     }
     
+
+}
+
+extension Array where Element: ValueMapping{
+    
     public func serializedValue() -> Any? {
         
-        let resultAny: [Any] = self
-        
-        if let values = resultAny as? [ValueMapping]{
-            
-            var result = [Any]()
-            for i in 0..<self.count{
-                if let serialized = values[i].serializedValue(){
-                    result.append(serialized)
-                }
-            }
-            if result.count > 0{
-                return result
+        var result = [Any]()
+        for i in 0..<self.count{
+            if let serialized = self[i].serializedValue(){
+                result.append(serialized)
             }
         }
-        return resultAny
+        if result.count > 0{
+            return result
+        }
+        return nil
     }
 }
 
 extension Array: Initializable{
     
-    public static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
+    public static func initialize(pointer: UnsafeMutablePointer<UInt8>, offset: Int, value: Any?){
         
-        let p = pointer.advanced(by: offset)
+        let p = pointer.advancedBy(offset)
+        let bind = unsafeBitCast(p, UnsafeMutablePointer<[Element]>.self)
         
-        if let value = self.mappingWith(any: value) as? [Element]{
-            let bind = p.bindMemory(to: [Element].self, capacity: 1)
-            bind.initialize(to: value)
+        if let value = self.mappingWith(value) as? [Element]{
+            bind.initialize(value)
         }
         else{
-            let bind = p.bindMemory(to: [Element].self, capacity: 1)
-            bind.initialize(to: [])
+            bind.initialize([])
         }
     }
 }
