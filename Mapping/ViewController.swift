@@ -11,20 +11,26 @@ import MappingAce
 
 class ViewController: UIViewController {
 
+    struct PhoneNumber: Mapping {
+        var tel: String
+        var type: String
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.testStructMapping()
+        self.testStructMappingWithDefaultValue()
+    }
+    
+    
+    func testStructMapping(){
         
         struct UserArrayPhoneEntity: Mapping{
             var age: Int?
             var name: String?
             var phone: PhoneNumber
             var phones: [PhoneNumber]
-        }
-        
-        struct PhoneNumber: Mapping {
-            var tel: String
-            var type: String
         }
         
         
@@ -41,18 +47,48 @@ class ViewController: UIViewController {
             "phones": phones
         ]
         
-        let age = dic["age"]!
-        print(type(of: age))
+        let user = UserArrayPhoneEntity(fromDic: dic)
         
-        
-        for _ in 0..<150{
-//            DispatchQueue.global().async {
-            let user = UserArrayPhoneEntity.init(fromDic: dic)
-            print(user)
-//            }
-        }
+        let serialized = user.toDictionary()
+            
+        print(serialized)
         
     }
+    
+    func testStructMappingWithDefaultValue(){
+        
+        struct UserArrayPhoneEntity: InitMapping{
+            var age: Int?
+            var name: String = "default"
+            var phone: PhoneNumber?
+            var phones: [PhoneNumber] = []
+        }
+        
+        struct PhoneNumber: Mapping {
+            var tel: String
+            var type: String
+        }
+        
+        
+        let phone: [String : Any] = [
+            "tel": "186xxxxxxxx",
+            "type": "work"
+        ]
+        
+        let phones = Array(repeating: phone, count: 10)
+        let dic: [String : Any] = [
+            "age" : 14.0,
+            "phone": phone,
+            "phones": phones
+        ]
+
+        let user = UserArrayPhoneEntity(fromDic: dic)
+        let serialized = user.toDictionary()
+        print(serialized)
+
+    }
+    
+    
 }
 
 
