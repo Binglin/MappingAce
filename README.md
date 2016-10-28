@@ -1,9 +1,7 @@
 
-
-![MappingAce](https://github.com/IcyButterfly/MappingAce/blob/master/logo.png?raw=true)
-<font color="red">
-most handy to use
-</font>
+<p align="center" >
+  <img src="https://github.com/IcyButterfly/MappingAce/blob/master/logo.png?raw=true" alt="MappingAce" title="MappingAce">
+</p>
 
 
 [![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://swift.org)
