@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import Mapping
+@testable import MappingAce
 
 private struct User: Mapping{
     var age: Int

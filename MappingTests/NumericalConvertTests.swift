@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import Mapping
+@testable import MappingAce
 
 
 class NumericalConvertTests: XCTestCase {
