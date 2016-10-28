@@ -1,6 +1,10 @@
 
 
 ![MappingAce](https://github.com/IcyButterfly/MappingAce/blob/master/logo.png?raw=true)
+<font color="red">
+most handy to use
+</font>
+
 
 [![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://swift.org)
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/MappingAce.svg)](https://img.shields.io/cocoapods/v/MappingAce.svg)
@@ -68,7 +72,6 @@ struct User{
 }
 
 // if you want your serilized nested struct, just implement the `Mapping` protocol
-// 如果结构体里包含其它的结构体，只需要实现Mapping协议即可自动解析
 struct PhoneNumber: Mapping {
     var tel: String
     var type: String
