@@ -33,7 +33,7 @@ extension InitMapping{
         return Self.init(fromDic: v)
     }
     
-    func serializedValue() -> Any?{
+    public func serializedValue() -> Any?{
         return self.toDictionary()
     }
     

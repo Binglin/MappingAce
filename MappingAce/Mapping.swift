@@ -32,14 +32,15 @@ public extension Mapping{
 }
 
 extension Mapping{
-    static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
+    public static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
         let mapped = self.mappingWith(any: value)
         pointer.storeBytes(of: mapped as! Self, toByteOffset: offset, as: Self.self)
     }
     
-    func serializedValue() -> Any?{
+    public func serializedValue() -> Any?{
         return self.toDictionary()
     }
+
 }
 
 
