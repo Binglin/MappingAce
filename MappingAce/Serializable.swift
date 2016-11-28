@@ -67,7 +67,7 @@ public extension Serializable{
             rawPointer = unsafeBitCast(opaquePointer, to: UnsafeRawPointer.self)
         }
         
-        var result = [String : Any]()
+        var result = [String : Any?]()
         
         for i in 0..<structInfo.propertyNames.count{
             
