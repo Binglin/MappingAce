@@ -30,20 +30,36 @@ public protocol ValueMapping{
     */
     static func mappingWith(any: Any?) -> Any?
     
-    /// no need to override fetchValue(fromPointer:), just override func serializedValue() -> Any?
+    
+    /// fetch value from pointer as Self
+    ///
+    /// - Parameter p: pointer
+    /// - Returns:     value of Self.type
     static func fetchValue(fromPointer p: UnsafeRawPointer) -> Any?
     
     /// override point if needed
+    /// value when convert to json object
+    ///
+    /// - Returns: json
     func serializedValue() -> Any?
 }
 
 public extension ValueMapping{
     
+    
+    /// fetch value from pointer
+    ///
+    /// - Parameter p: pointer
+    /// - Returns:     value from serializedValue of Self.Type
     public static func fetchValue(fromPointer p: UnsafeRawPointer) -> Any?{
         let result = p.load(as: Self.self)
         return result.serializedValue()
     }
     
+    
+    /// value when convert to json object
+    ///
+    /// - Returns: json
     public func serializedValue() -> Any?{
         return self
     }
