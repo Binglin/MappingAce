@@ -27,7 +27,7 @@ class NumericalConvertTests: XCTestCase {
         
         let intDic: [String : Any] = ["int" : 1]
         if let int = intDic["int"] as? NSNumber{
-            let asint = int as Int
+            let asint = int.intValue
             XCTAssertEqual(asint, 1)
         }else{
             XCTFail("此路不通")
@@ -38,7 +38,7 @@ class NumericalConvertTests: XCTestCase {
         
         let floatDic: [String : Any] = ["float" : 1]
         if let float = floatDic["float"] as? NSNumber{
-            let asfloat = float as Float
+            let asfloat = float.floatValue
             XCTAssertEqual(asfloat, 1)
         }else{
             XCTFail("此路不通")
@@ -49,7 +49,7 @@ class NumericalConvertTests: XCTestCase {
         
         let timeintervalDic: [String : Any] = ["timeinterval" : 1]
         if let timeinterval = timeintervalDic["timeinterval"] as? NSNumber{
-            let astimeinterval = timeinterval as TimeInterval
+            let astimeinterval = timeinterval.doubleValue
             XCTAssertTrue(astimeinterval == 1)
         }else{
             XCTFail("此路不通")
@@ -87,7 +87,7 @@ class NumericalConvertTests: XCTestCase {
         
         let boolDic: [String : Any] = ["bool" : 0]
         if let bool = boolDic["bool"] as? NSNumber{
-            let asBool = bool as Bool
+            let asBool = bool.boolValue
             XCTAssertEqual(asBool, false)
 
         }else{
@@ -103,6 +103,9 @@ class NumericalConvertTests: XCTestCase {
         let boolInt0 = Bool.init("0")
         let boolInt1 = Bool.init("1")
         
-        print(boolfalseString, booltrueString, boolInt0, boolInt1)
+        XCTAssertEqual(booltrueString, true)
+        XCTAssertEqual(boolfalseString, false)
+        XCTAssertEqual(boolInt0, nil)
+        XCTAssertEqual(boolInt1, nil)
     }
 }
