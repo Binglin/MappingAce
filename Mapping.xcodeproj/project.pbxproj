@@ -36,6 +36,8 @@
 		D4A454711DBDE06600551ADC /* SwiftClassMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A454701DBDE06600551ADC /* SwiftClassMappingTests.swift */; };
 		D4A454751DBDE37800551ADC /* SwiftStructNonilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A454741DBDE37800551ADC /* SwiftStructNonilTests.swift */; };
 		D4A454771DBDE4DF00551ADC /* SwiftStructNullableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A454761DBDE4DF00551ADC /* SwiftStructNullableTests.swift */; };
+		D4D92A6F1DEEA90B009513B8 /* MappingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D92A6E1DEEA90B009513B8 /* MappingError.swift */; };
+		D4D92A711DEEABF2009513B8 /* ArrayMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D92A701DEEABF2009513B8 /* ArrayMappingTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +105,8 @@
 		D4A454701DBDE06600551ADC /* SwiftClassMappingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftClassMappingTests.swift; sourceTree = "<group>"; };
 		D4A454741DBDE37800551ADC /* SwiftStructNonilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftStructNonilTests.swift; sourceTree = "<group>"; };
 		D4A454761DBDE4DF00551ADC /* SwiftStructNullableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftStructNullableTests.swift; sourceTree = "<group>"; };
+		D4D92A6E1DEEA90B009513B8 /* MappingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingError.swift; sourceTree = "<group>"; };
+		D4D92A701DEEABF2009513B8 /* ArrayMappingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayMappingTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +189,7 @@
 				D455EA6E1DC0981E00656EC2 /* ValueMapping.swift */,
 				D455EA541DC097C600656EC2 /* MappingAce.h */,
 				D455EA551DC097C600656EC2 /* Info.plist */,
+				D4D92A6E1DEEA90B009513B8 /* MappingError.swift */,
 			);
 			path = MappingAce;
 			sourceTree = "<group>";
@@ -196,6 +201,7 @@
 				D4A454761DBDE4DF00551ADC /* SwiftStructNullableTests.swift */,
 				D4A454701DBDE06600551ADC /* SwiftClassMappingTests.swift */,
 				D439BA5D1DBEF78E00528B71 /* NumericalConvertTests.swift */,
+				D4D92A701DEEABF2009513B8 /* ArrayMappingTests.swift */,
 				D4A454621DBDDFB100551ADC /* Info.plist */,
 				D4960D241DBF4A630017FE76 /* JSONSerializationTests.swift */,
 			);
@@ -371,6 +377,7 @@
 				D455EA741DC0981E00656EC2 /* IntegerMapping.swift in Sources */,
 				D455EA731DC0981E00656EC2 /* InitMapping.swift in Sources */,
 				D455EA7B1DC0981E00656EC2 /* Serializable.swift in Sources */,
+				D4D92A6F1DEEA90B009513B8 /* MappingError.swift in Sources */,
 				D455EA781DC0981E00656EC2 /* ObjectMetadata.swift in Sources */,
 				D455EA791DC0981E00656EC2 /* OptionalMapping.swift in Sources */,
 				D455EA7A1DC0981E00656EC2 /* PropertyMapping.swift in Sources */,
@@ -384,6 +391,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4D92A711DEEABF2009513B8 /* ArrayMappingTests.swift in Sources */,
 				D4A454711DBDE06600551ADC /* SwiftClassMappingTests.swift in Sources */,
 				D4A454771DBDE4DF00551ADC /* SwiftStructNullableTests.swift in Sources */,
 				D439BA5E1DBEF78E00528B71 /* NumericalConvertTests.swift in Sources */,

@@ -63,4 +63,26 @@ extension Array: Initializable{
 }
 
 extension Array: Updatable{}
+
+
+extension Array where Element: ValueMapping{
+    
+    public init(JSON: String) throws{
+        let jsonData = JSON.data(using: String.Encoding.utf8)
+        guard let data = jsonData else {
+            throw MappingError.nilData
+        }
+        let jsonObj  = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        
+        guard let jsonObjArr = jsonObj as? [[String: Any]] else{
+            throw MappingError.jsonInvalidate;
+        }
+        
+        self = jsonObjArr.map{ Element.mappingWith(any: $0) as! Element }
+    }
+        
+    public init(jsonObjArray: [[String : Any]]){
+        self = jsonObjArray.map{ Element.mappingWith(any: $0) as! Element }
+    }
+}
     
