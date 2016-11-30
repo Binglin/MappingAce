@@ -9,6 +9,7 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://tldrlegal.com/license/mit-license)
 
+*Swift JSON to Struct, class*
 
 MappingAce allows rapid creation of struct , Swift class, OC class . Automatic transform dictionary to model(model could be struct), forget to manually write property mapping code
 
