@@ -17,16 +17,16 @@ public extension Serializable{
     
     func toDictionary() -> [String : Any]{
        
-        let structInfo = MetadataInfoFor(type: Self.self)
+        let structInfo = MetadataInfoFor(Self.self)
         
         var rawPointer: UnsafeRawPointer
         
-        if structInfo.kind == .struct{
+        if structInfo.kind == .`struct`{
             var toSerialize = self
-            let selfPointer = withUnsafePointer(to: &toSerialize, {$0})
+            let selfPointer = withUnsafePointer(&toSerialize, {$0})
             rawPointer  = UnsafeRawPointer(selfPointer)
         }else{
-            let opaquePointer = Unmanaged.passUnretained(self as AnyObject).toOpaque()
+            let opaquePointer = Unmanaged.passUnretained(self as! AnyObject).toOpaque()
             rawPointer = unsafeBitCast(opaquePointer, to: UnsafeRawPointer.self)
         }
         
@@ -54,16 +54,16 @@ public extension Serializable{
     
     func toNullableValueDictionary() -> [String : Any?]{
         
-        let structInfo = MetadataInfoFor(type: Self.self)
+        let structInfo = MetadataInfoFor(Self.self)
         
-        var rawPointer: UnsafeRawPointer
+        var rawPointer: COpaquePointer
         
-        if structInfo.kind == .struct{
+        if structInfo.kind == .`struct`{
             var toSerialize = self
-            let selfPointer = withUnsafePointer(to: &toSerialize, {$0})
+            let selfPointer = withUnsafePointer(&toSerialize, {$0})
             rawPointer  = UnsafeRawPointer(selfPointer)
         }else{
-            let opaquePointer = Unmanaged.passUnretained(self as AnyObject).toOpaque()
+            let opaquePointer = Unmanaged.passUnretained(self as! AnyObject).toOpaque()
             rawPointer = unsafeBitCast(opaquePointer, to: UnsafeRawPointer.self)
         }
         

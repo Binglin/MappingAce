@@ -57,7 +57,7 @@ extension NominalTypeDescriptor{
         var Description : Int
         
         static var nominalTypeOffset: Int{
-            return (MemoryLayout<Int>.size == MemoryLayout<Int64>.size) ? 8 : 11
+            return (sizeof(Int.self) == sizeof(Int64.self)) ? 8 : 11
         }
     }
 }

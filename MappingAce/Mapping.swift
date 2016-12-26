@@ -16,8 +16,8 @@ public protocol Mapping: ValueMapping, Initializable, Updatable, Serializable{
 
 public extension Mapping{
 
-    init(data: Data , options: JSONSerialization.ReadingOptions = .allowFragments) throws{
-        let jsonDic = try JSONSerialization.jsonObject(with: data, options: options)
+    init(data: NSData , options: NSJSONReadingOptions = .AllowFragments) throws{
+        let jsonDic = try NSJSONSerialization.JSONObjectWithData(data, options: options)
         let dic = jsonDic as! [String : Any]
         self = Self.init(fromDic: dic)
     }
@@ -26,15 +26,16 @@ public extension Mapping{
 public extension Mapping{
    
     init(fromDic dic: [String : Any]){
-        self = MappingAny(type: Self.self, fromDic: dic)
+        self = MappingAny(Self.self, fromDic: dic)
     }
 
 }
 
 extension Mapping{
-    public static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
-        let mapped = self.mappingWith(any: value)
-        pointer.storeBytes(of: mapped as! Self, toByteOffset: offset, as: Self.self)
+    public static func initialize(pointer: UnsafeMutablePointer<Int8>, offset: Int, value: Any?){
+        let mapped = self.mappingWith(value)
+        let mappedp = unsafeBitCast(mapped as! Self, UnsafeMutablePointer<Int8>.self)
+        pointer.assignFrom(mappedp, count: sizeof(Self))
     }
     
     public func serializedValue() -> Any?{
@@ -58,15 +59,15 @@ extension Mapping{
 
 public func MappingAny<T>(type: T.Type = T.self, fromDic dic: [String : Any]) -> T{
     
-    let phone = UnsafeMutablePointer<T>.allocate(capacity: 1)
+    let phone = UnsafeMutablePointer<T>.alloc(1)
     defer {
-        phone.deallocate(capacity: 1)
+        phone.dealloc(1)
     }
-    let rawPhone = UnsafeMutableRawPointer(phone)
+    let rawPhone = unsafeBitCast(phone, UnsafeMutablePointer<Int8>.self)
     
-    let structInfo = MetadataInfoFor(type: T.self)
+    let structInfo = MetadataInfoFor(T.self)
     
-    if structInfo.kind != .struct{
+    if structInfo.kind != .`struct`{
         fatalError("class should be implement InitMapping")
     }
     
@@ -76,11 +77,11 @@ public func MappingAny<T>(type: T.Type = T.self, fromDic dic: [String : Any]) ->
         let pType = structInfo.propertyTypes[i]
         let pOffs = structInfo.propertyOffsets[i]
         
-        let dicValue = valueFor(propertyName: pName, fromDic: dic, type: T.self)//dic[pName]
+        let dicValue = valueFor(pName, fromDic: dic, type: T.self)//dic[pName]
         
         
-        if !(pType is ExpressibleByNilLiteral.Type) && dicValue == nil{
-            let msg = "\n⚡️\(String(describing: T.self))⚡️ missing required value for property 💔 \(pName) 💔\n"
+        if !(pType is NilLiteralConvertible.Type) && dicValue == nil{
+            let msg = "\n⚡️\(String(T.self))⚡️ missing required value for property 💔 \(pName) 💔\n"
             print(msg)
             fatalError(msg)
         }

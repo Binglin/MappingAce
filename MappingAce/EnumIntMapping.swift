@@ -10,7 +10,7 @@ import Foundation
 
 
 
-protocol EnumInt: ValueMapping, Initializable, Updatable {
+public protocol EnumInt: ValueMapping, Initializable, Updatable {
     init?(rawValue: Int)
     var rawValue: Int { get }
 }

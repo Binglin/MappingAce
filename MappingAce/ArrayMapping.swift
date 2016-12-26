@@ -17,7 +17,7 @@ extension Array: ValueMapping{
             
             var result = [Element]()
             for i in 0..<value.count{
-                result.append(elementType.mappingWith(any: value[i]) as! Element)
+                result.append(elementType.mappingWith(value[i]) as! Element)
             }
             return result
             
@@ -47,11 +47,11 @@ extension Array: ValueMapping{
 
 extension Array: Initializable{
     
-    public static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
+    public static func initialize(pointer: UnsafeMutablePointer<Int8>, offset: Int, value: Any?){
         
-        let p = pointer.advanced(by: offset)
+        let p = pointer.advancedBy(offset)
         
-        if let value = self.mappingWith(any: value) as? [Element]{
+        if let value = self.mappingWith(value) as? [Element]{
             let bind = p.bindMemory(to: [Element].self, capacity: 1)
             bind.initialize(to: value)
         }
@@ -68,21 +68,21 @@ extension Array: Updatable{}
 extension Array where Element: ValueMapping{
     
     public init(JSON: String) throws{
-        let jsonData = JSON.data(using: String.Encoding.utf8)
+        let jsonData = JSON.dataUsingEncoding(NSUTF8StringEncoding)
         guard let data = jsonData else {
             throw MappingError.nilData
         }
-        let jsonObj  = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        let jsonObj  = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
         
         guard let jsonObjArr = jsonObj as? [[String: Any]] else{
             throw MappingError.jsonInvalidate;
         }
         
-        self = jsonObjArr.map{ Element.mappingWith(any: $0) as! Element }
+        self = jsonObjArr.map{ Element.mappingWith($0) as! Element }
     }
         
     public init(jsonObjArray: [[String : Any]]){
-        self = jsonObjArray.map{ Element.mappingWith(any: $0) as! Element }
+        self = jsonObjArray.map{ Element.mappingWith($0) as! Element }
     }
 }
     

@@ -9,7 +9,7 @@
 import Foundation
 
 
-enum MappingError : Error{
+enum MappingError : ErrorType{
     case nilData
     case jsonInvalidate
 }

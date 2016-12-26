@@ -25,7 +25,7 @@ struct ObjectMetadata {
 
 func MetadataInfoFor(type: Any.Type) -> ObjectMetadata{
     
-    let typePointer = unsafeBitCast(type, to: UnsafePointer<Struct>.self)
+    let typePointer = unsafeBitCast(type, UnsafePointer<Struct>.self)
     //print(type, "pointer is", typePointer)
     let typeStruct = typePointer.pointee
     let kind = typeStruct.kind
@@ -39,7 +39,7 @@ func MetadataInfoFor(type: Any.Type) -> ObjectMetadata{
     }
 
     if kind == 1{
-        let info = nominalTypeOfStruct(typePointer: typePointer)
+        let info = nominalTypeOfStruct(typePointer)
         TypeInfoHashTable.table[typePointer] = info
         return info
     }
@@ -58,11 +58,11 @@ func MetadataInfoFor(type: Any.Type) -> ObjectMetadata{
 
 private func nominalTypeOfStruct(typePointer: UnsafePointer<Struct>) -> ObjectMetadata{
     
-    let intPointer = unsafeBitCast(typePointer, to: UnsafePointer<Int>.self)
+    let intPointer = unsafeBitCast(typePointer, UnsafePointer<Int>.self)
     
-    let nominalTypeBase = intPointer.advanced(by: 1)
-    let int8Type = unsafeBitCast(nominalTypeBase, to: UnsafePointer<Int8>.self)
-    let nominalTypePointer = int8Type.advanced(by: typePointer.pointee.nominalTypeDescriptorOffset)
+    let nominalTypeBase = intPointer.advancedBy(1)
+    let int8Type = unsafeBitCast(nominalTypeBase, UnsafePointer<Int8>.self)
+    let nominalTypePointer = int8Type.advancedBy(typePointer.pointee.nominalTypeDescriptorOffset)
     
     
     let nominalType = unsafeBitCast(nominalTypePointer, to: UnsafePointer<NominalTypeDescriptor>.self)
@@ -90,7 +90,7 @@ private func nominalTypeOfStruct(typePointer: UnsafePointer<Struct>) -> ObjectMe
         offsetArr.append(offset.pointee)
     }
     
-    let info = ObjectMetadata(kind: .struct,propertyNames: fieldNames, propertyTypes: fieldType, propertyOffsets: offsetArr)
+    let info = ObjectMetadata(kind: .`struct`,propertyNames: fieldNames, propertyTypes: fieldType, propertyOffsets: offsetArr)
     return info
 }
 
@@ -98,8 +98,8 @@ private func nominalTypeOfStruct(typePointer: UnsafePointer<Struct>) -> ObjectMe
 
 private func getType(pointer nominalFunc: UnsafePointer<Int8>, fieldCount numberOfField: Int) -> [Any.Type]{
         
-    let funcPointer = unsafeBitCast(nominalFunc, to: FieldsTypeAccessor.self)
-    let funcBase = funcPointer(unsafeBitCast(nominalFunc, to: UnsafePointer<Int>.self))
+    let funcPointer = unsafeBitCast(nominalFunc, FieldsTypeAccessor.self)
+    let funcBase = funcPointer(unsafeBitCast(nominalFunc, UnsafePointer<Int>.self))
     
     
     var types: [Any.Type] = []
@@ -122,29 +122,29 @@ private func getFieldNames(pointer: UnsafePointer<Int8>, fieldCount numberOfFiel
 
 private func nominalTypeOfClass(typePointer t: UnsafePointer<Struct>) -> ObjectMetadata{
     
-    let typePointer = unsafeBitCast(t, to: UnsafePointer<NominalTypeDescriptor.Class>.self)
+    let typePointer = unsafeBitCast(t, UnsafePointer<NominalTypeDescriptor.Class>.self)
     return nominalTypeOf(pointer: typePointer)
     
 }
 
 private func nominalTypeOf(pointer typePointer: UnsafePointer<NominalTypeDescriptor.Class>) -> ObjectMetadata{
     
-    let intPointer = unsafeBitCast(typePointer, to: UnsafePointer<Int>.self)
+    let intPointer = unsafeBitCast(typePointer, UnsafePointer<Int>.self)
     
-    let typePointee = typePointer.pointee
+    let typePointee = typePointer.memory
     let superPointee = typePointee.super_
     
     var superObject: ObjectMetadata
     
-    if unsafeBitCast(typePointer.pointee.isa, to: Int.self) == 14 || unsafeBitCast(superPointee, to: Int.self) == 0{
+    if unsafeBitCast(typePointer.memory.isa, Int.self) == 14 || unsafeBitCast(superPointee, Int.self) == 0{
         superObject = ObjectMetadata(kind: .ObjCClassWrapper, propertyNames: [], propertyTypes: [], propertyOffsets: [])
         return superObject
     }else{
         superObject = nominalTypeOf(pointer: superPointee)
-        superObject.kind = .class
+        superObject.kind = .`class`
     }
     
-    let nominalTypeOffset = (MemoryLayout<Int>.size == MemoryLayout<Int64>.size) ? 8 : 11
+    let nominalTypeOffset = (sizeof(Int.self) == sizeof(Int64.self)) ? 8 : 11
     let nominalTypeInt = intPointer.advanced(by: nominalTypeOffset)
     
     let nominalTypeint8 = unsafeBitCast(nominalTypeInt, to: UnsafePointer<Int8>.self)
@@ -176,7 +176,7 @@ private func nominalTypeOf(pointer typePointer: UnsafePointer<NominalTypeDescrip
         let offset = offsetPointer.advanced(by: i)
         offsetArr.append(offset.pointee)
     }
-    superObject.propertyOffsets.append(contentsOf: offsetArr)
+    superObject.propertyOffsets.appendContentsOf(offsetArr)
     
     return superObject
 }

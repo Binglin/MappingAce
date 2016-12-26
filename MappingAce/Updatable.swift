@@ -10,13 +10,13 @@ import Foundation
 
 
 public protocol Updatable {
-    static func update(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?)
+    static func update(pointer: UnsafeMutablePointer<Int8>, offset: Int, value: Any?)
 }
 
 public extension Updatable where Self: ValueMapping{
     
-    public static func update(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
-        let mapped = self.mappingWith(any: value)
+    public static func update(pointer: UnsafeMutablePointer<Int8>, offset: Int, value: Any?){
+        let mapped = self.mappingWith(value)
         let p = pointer.advanced(by: offset)
         let bind = p.bindMemory(to: Self.self, capacity: 1)
         

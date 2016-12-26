@@ -9,13 +9,13 @@
 import Foundation
 
 public protocol Initializable {
-    static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?)
+    static func initialize(pointer: UnsafeMutablePointer<Int8>, offset: Int, value: Any?)
 }
 
 public extension Initializable where Self: ValueMapping{
     
-    static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
-        let mapped = self.mappingWith(any: value)
+    static func initialize(pointer: UnsafeMutablePointer<Int8>, offset: Int, value: Any?){
+        let mapped = self.mappingWith(value)
         pointer.storeBytes(of: mapped as! Self, toByteOffset: offset, as: Self.self)
     }
 }

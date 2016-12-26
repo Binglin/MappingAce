@@ -35,7 +35,8 @@ public protocol ValueMapping{
     ///
     /// - Parameter p: pointer
     /// - Returns:     value of Self.type
-    static func fetchValue(fromPointer p: UnsafeRawPointer) -> Any?
+
+    static func fetchValue(fromPointer p: COpaquePointer) -> Any?
     
     /// override point if needed
     /// value when convert to json object
@@ -51,8 +52,9 @@ public extension ValueMapping{
     ///
     /// - Parameter p: pointer
     /// - Returns:     value from serializedValue of Self.Type
-    public static func fetchValue(fromPointer p: UnsafeRawPointer) -> Any?{
-        let result = p.load(as: Self.self)
+    public static func fetchValue(fromPointer p: UnsafeMutablePointer<Int8>) -> Any?{
+        
+        let result = unsafeBitCast(p, Self.self)
         return result.serializedValue()
     }
     
