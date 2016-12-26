@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import MappingAce
 
 class JSONSerializationTests: XCTestCase {
     
@@ -23,6 +24,22 @@ class JSONSerializationTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        
+        struct Company: Mapping {
+            let name:String
+            let id:Int
+        }
+        
+        let companyInfo: [String : Any] = ["name" : "MappingAce", "id" : 1]
+        
+        let company = Company(fromDic: companyInfo)
+        print(company.name)
+        print(company.id)
+        
+        XCTAssertEqual(company.id, 1)
+        XCTAssertEqual(company.name, "MappingAce")
+        
     }
     
     func testPerformanceExample() {

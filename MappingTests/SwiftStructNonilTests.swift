@@ -16,14 +16,6 @@ private struct User: Mapping{
     var phone: PhoneNumber
 }
 
-private struct PhoneNumber: Mapping {
-    var tel: String
-    var type: String
-}
-
-
-
-
 class SwiftStructNonilTests: XCTestCase {
     
     override func setUp() {
@@ -229,9 +221,6 @@ class SwiftStructNonilTests: XCTestCase {
     }
     
     func testArrayMappingExample(){
-        
-        let v = Optional<Bool>.none.serializedValue()
-        //XCTAssertEqual(v, nil)
         
         struct UserArrayPhoneEntity: Mapping{
             var age: Int

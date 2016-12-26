@@ -16,7 +16,7 @@ private struct User: Serializable{
     var phone: PhoneNumber?
 }
 
-private struct PhoneNumber: Mapping {
+struct PhoneNumber: Mapping {
     var tel: String
     var type: String
 }

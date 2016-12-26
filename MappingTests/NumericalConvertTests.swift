@@ -84,6 +84,9 @@ class NumericalConvertTests: XCTestCase {
         let boolInt10 = Bool.mappingWith(any: 10) as! Bool
         XCTAssertEqual(boolInt10, true)
         
+        let v = Optional<Bool>.none.serializedValue()
+        //XCTAssertEqual(nil, v)
+        
         
         let boolDic: [String : Any] = ["bool" : 0]
         if let bool = boolDic["bool"] as? NSNumber{
