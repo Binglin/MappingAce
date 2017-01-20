@@ -21,6 +21,19 @@ extension Array: ValueMapping{
             }
             return result
             
+        }else if let elementType = Element.self as? ValueMapping.Type, let value = any as? String{
+            
+            if let data = value.data(using: .utf8) {
+
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    
+                    if let jsonObjArray = json as? [[String : Any]] {
+                        return jsonObjArray.map{ elementType.mappingWith(any: $0) as! Element}
+                    }
+                    return json
+                } catch { }
+            }
         }
         return any
     }
