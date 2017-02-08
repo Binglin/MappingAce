@@ -17,7 +17,9 @@ extension Array: ValueMapping{
             
             var result = [Element]()
             for i in 0..<value.count{
-                result.append(elementType.mappingWith(any: value[i]) as! Element)
+                if let item = elementType.mappingWith(any: value[i]) as? Element {
+                    result.append(item)
+                }
             }
             return result
             

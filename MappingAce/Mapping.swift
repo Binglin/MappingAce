@@ -76,13 +76,17 @@ public func MappingAny<T>(type: T.Type = T.self, fromDic dic: [String : Any]) ->
         let pType = structInfo.propertyTypes[i]
         let pOffs = structInfo.propertyOffsets[i]
         
-        let dicValue = valueFor(propertyName: pName, fromDic: dic, type: T.self)//dic[pName]
+        var dicValue = valueFor(propertyName: pName, fromDic: dic, type: T.self)//dic[pName]
         
         
         if !(pType is ExpressibleByNilLiteral.Type) && dicValue == nil{
             let msg = "\n⚡️\(String(describing: T.self))⚡️ missing required value for property 💔 \(pName) 💔\n"
             print(msg)
             fatalError(msg)
+        }
+        
+        if dicValue is NSNull {
+            dicValue = nil
         }
         
         if let type = pType as? Initializable.Type{
