@@ -125,7 +125,6 @@ class PerformanceTests: XCTestCase {
         }
     }
     
-    
     func testSwiftyJSONPerformanceExample() {
         
         self.measure {
@@ -153,19 +152,6 @@ class PerformanceTests: XCTestCase {
                     phone.type = type
                 }
                 user.phone = phone
-            }
-        }
-    }
-    
-    func testUnboxPerformanceExample() {
-        
-        self.measure {
-            
-            do {
-                for _ in 0..<10000{
-                    let _: UserInPerformance = try unbox(dictionary: self.dic)
-                }
-            }catch {
                 
             }
         }
@@ -181,5 +167,17 @@ class PerformanceTests: XCTestCase {
         }
     }
 
-    
+    func testUnboxPerformanceExample() {
+        
+        self.measure {go
+            
+            do {
+                for _ in 0..<10000{
+                    let _: UserInPerformance = try unbox(dictionary: self.dic)
+                }
+            }catch {
+                
+            }
+        }
+    }
 }
