@@ -72,7 +72,7 @@ class ViewController: UIViewController {
         
         let phone: [String : Any] = [
             "tel": "186xxxxxxxx",
-            "type": "Work"
+            "type": "work"
         ]
         
         let phones = Array(repeating: phone, count: 10)
