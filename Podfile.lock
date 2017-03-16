@@ -1,0 +1,18 @@
+PODS:
+  - ObjectMapper (2.2.2)
+  - SwiftyJSON (3.1.4)
+  - Unbox (2.3.1)
+
+DEPENDENCIES:
+  - ObjectMapper (~> 2.2.2)
+  - SwiftyJSON (~> 3.1.4)
+  - Unbox (~> 2.3.1)
+
+SPEC CHECKSUMS:
+  ObjectMapper: 9e385c2295bcc4e16eabbcfc85db801442bba545
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  Unbox: 96e54c15284b97244a1daf8ea560f648dd08f0db
+
+PODFILE CHECKSUM: 6f6f24457828426e2b7726c79f90c61cec0dcb3e
+
+COCOAPODS: 1.1.1

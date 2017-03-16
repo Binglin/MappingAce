@@ -370,65 +370,7 @@ class SwiftStructNonilTests: XCTestCase {
         
         XCTAssertEqual(keyPathA.int, 1)
     }
-    
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        
-        let phone: [String : Any] = [
-            "tel": "186xxxxxxxx",
-            "type": "work"
-        ]
-        
-        let dic: [String : Any] = [
-            "age" : "24",
-            "name": "Binglin",
-            "phone": phone
-        ]
-        
-        self.measure {
-            for _ in 0..<10000{
-                _ = MappingAny(type: User.self, fromDic: dic)
-            }
-        }
-    }
-    
-    func testRawSetPerformanceExample() {
-        // This is an example of a performance test case.
-        
-        let phone: [String : Any] = [
-            "tel": "186xxxxxxxx",
-            "type": "work"
-        ]
-        
-        let dic: [String : Any] = [
-            "age" : "24",
-            "name": "Binglin",
-            "phone": phone
-        ]
-        
-        
-        self.measure {
-            
-            for _ in 0..<10000{
-                
-                let name = dic["name"] as! String
-                let age  = dic["age"]
-                let phoneInfo = dic["phone"] as? [String : Any]
-                
-                let phonetel = phoneInfo?["tel"] as! String
-                let phoneType     = phoneInfo?["type"] as! String
-                if let age = age as? Int{
-                    let phoneModel = PhoneNumber(tel: phonetel, type: phoneType)
-                    _ = User(age: age, name: name, phone: phoneModel)
-                }else if let agestr = age as? String{
-                    let ageint = Int.init(agestr)!
-                    let phoneModel = PhoneNumber(tel: phonetel, type: phoneType)
-                    _ = User(age: ageint, name: name, phone: phoneModel)
-                }
-            }
-        }
-    }
+
     
 }
 

@@ -17,10 +17,25 @@ extension Array: ValueMapping{
             
             var result = [Element]()
             for i in 0..<value.count{
-                result.append(elementType.mappingWith(any: value[i]) as! Element)
+                if let item = elementType.mappingWith(any: value[i]) as? Element {
+                    result.append(item)
+                }
             }
             return result
             
+        }else if let elementType = Element.self as? ValueMapping.Type, let value = any as? String{
+            
+            if let data = value.data(using: .utf8) {
+
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    
+                    if let jsonObjArray = json as? [[String : Any]] {
+                        return jsonObjArray.map{ elementType.mappingWith(any: $0) as! Element}
+                    }
+                    return json
+                } catch { }
+            }
         }
         return any
     }

@@ -12,6 +12,9 @@ import Foundation
 extension String: ValueMapping{
     public static func mappingWith(any: Any?) -> Any? {
         if let any = any{
+            if any is NSNull {
+                return nil
+            }
             return String(describing: any)
         }
         return nil

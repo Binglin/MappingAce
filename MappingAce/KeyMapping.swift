@@ -9,7 +9,7 @@
 import Foundation
 
 
-protocol KeyMapping {
+public protocol KeyMapping {
     static func mappedKeyFor(key: String) -> String?
 }
 
