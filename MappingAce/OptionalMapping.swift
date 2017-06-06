@@ -58,3 +58,54 @@ extension Optional: Updatable{
         bind.pointee = mapped as? Wrapped
     }
 }
+
+
+
+extension ImplicitlyUnwrappedOptional: ValueMapping{
+    
+    public static func mappingWith(any: Any?) -> Any? {
+        
+        if let value = any{
+            
+            if let type = Wrapped.self as? ValueMapping.Type{
+                return type.mappingWith(any: value)
+            }
+        }
+        return nil
+    }
+    
+    public func serializedValue() -> Any? {
+        
+        guard let r = self else{
+            return nil
+        }
+        
+        if let mapping = r as? ValueMapping{
+            return mapping.serializedValue()
+        }
+        
+        return r
+    }
+}
+
+extension ImplicitlyUnwrappedOptional: Initializable {
+    
+    public static func initialize(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
+        
+        let p = pointer.advanced(by: offset)
+        let mapped = self.mappingWith(any: value)
+        
+        let bind = p.bindMemory(to: ImplicitlyUnwrappedOptional<Wrapped>.self, capacity: 1)
+        bind.initialize(to: mapped as? Wrapped)
+    }
+}
+
+extension ImplicitlyUnwrappedOptional: Updatable {
+    public static func update(pointer: UnsafeMutableRawPointer, offset: Int, value: Any?){
+        let p = pointer.advanced(by: offset)
+        let mapped = self.mappingWith(any: value)
+        
+        let bind = p.bindMemory(to: ImplicitlyUnwrappedOptional<Wrapped>.self, capacity: 1)
+        bind.pointee = mapped as? Wrapped
+    }
+}

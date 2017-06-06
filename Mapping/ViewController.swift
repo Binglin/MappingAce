@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.testStructMapping()
+        //self.testStructMapping()
         self.testStructMappingWithDefaultValue()
     }
     
@@ -58,7 +58,7 @@ class ViewController: UIViewController {
     func testStructMappingWithDefaultValue(){
         
         struct UserArrayPhoneEntity: InitMapping{
-            var age: Int?
+            var age: Int!
             var name: String = "default"
             var phone: PhoneNumber?
             var phones: [PhoneNumber] = []
