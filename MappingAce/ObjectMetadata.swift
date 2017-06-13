@@ -136,7 +136,7 @@ private func nominalTypeOf(pointer typePointer: UnsafePointer<NominalTypeDescrip
     
     var superObject: ObjectMetadata
     
-    if unsafeBitCast(typePointer.pointee.isa, to: Int.self) == 14 || unsafeBitCast(superPointee, to: Int.self) == 0{
+    if Int(bitPattern: typePointer.pointee.isa) == 14 || Int(bitPattern: superPointee) == 0{
         superObject = ObjectMetadata(kind: .ObjCClassWrapper, propertyNames: [], propertyTypes: [], propertyOffsets: [])
         return superObject
     }else{

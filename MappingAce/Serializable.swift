@@ -27,7 +27,7 @@ public extension Serializable{
             rawPointer  = UnsafeRawPointer(selfPointer)
         }else{
             let opaquePointer = Unmanaged.passUnretained(self as AnyObject).toOpaque()
-            rawPointer = unsafeBitCast(opaquePointer, to: UnsafeRawPointer.self)
+            rawPointer = UnsafeRawPointer(opaquePointer)
         }
         
         
@@ -64,7 +64,7 @@ public extension Serializable{
             rawPointer  = UnsafeRawPointer(selfPointer)
         }else{
             let opaquePointer = Unmanaged.passUnretained(self as AnyObject).toOpaque()
-            rawPointer = unsafeBitCast(opaquePointer, to: UnsafeRawPointer.self)
+            rawPointer = UnsafeRawPointer(opaquePointer)
         }
         
         var result = [String : Any?]()
