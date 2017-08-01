@@ -169,7 +169,7 @@ class PerformanceTests: XCTestCase {
 
     func testUnboxPerformanceExample() {
         
-        self.measure {go
+        self.measure {
             
             do {
                 for _ in 0..<10000{
