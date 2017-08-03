@@ -37,12 +37,12 @@ MappingAce allows rapid creation of struct , Swift class, OC class . Automatic t
 
 // It is recommend to implement protocol `Mapping`, and just implement `Mapping`, no more works
 struct PhoneNumber: Mapping{
-	var tel: String
-	var type: String
+    var tel: String
+    var type: String
 }
 
 let phoneInfo: [String : Any] = [
-	"tel": "186xxxxxxxx",
+    "tel": "186xxxxxxxx",
     "type": "work"
 ]
 let phone = PhoneNumber(fromDic: phoneInfo)
@@ -54,8 +54,8 @@ print(phone.type) //"work"
 
 // Struct did not implement the `Mapping` protocol
 struct PhoneNumber {
-	var tel: String
-	var type: String
+    var tel: String
+    var type: String
 }
 
 let phone = MappingAny(type: PhoneEntity.self, fromDic: phoneInfo)
