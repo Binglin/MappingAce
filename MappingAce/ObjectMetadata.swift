@@ -26,7 +26,6 @@ struct ObjectMetadata {
 func MetadataInfoFor(type: Any.Type) -> ObjectMetadata{
     
     let typePointer = unsafeBitCast(type, to: UnsafePointer<Struct>.self)
-    //print(type, "pointer is", typePointer)
     let typeStruct = typePointer.pointee
     let kind = typeStruct.kind
     
@@ -58,27 +57,29 @@ func MetadataInfoFor(type: Any.Type) -> ObjectMetadata{
 
 private func nominalTypeOfStruct(typePointer: UnsafePointer<Struct>) -> ObjectMetadata{
     
-    let intPointer = unsafeBitCast(typePointer, to: UnsafePointer<Int>.self)
+    let intPointer = typePointer.withMemoryRebound(to: Int.self, capacity: 1, { $0 })
     
     let nominalTypeBase = intPointer.advanced(by: 1)
-    let int8Type = unsafeBitCast(nominalTypeBase, to: UnsafePointer<Int8>.self)
+    
+    let int8Type = nominalTypeBase.withMemoryRebound(to: Int8.self, capacity: 1, { $0 })
+
     let nominalTypePointer = int8Type.advanced(by: typePointer.pointee.nominalTypeDescriptorOffset)
     
-    
-    let nominalType = unsafeBitCast(nominalTypePointer, to: UnsafePointer<NominalTypeDescriptor>.self)
+    let nominalType = nominalTypePointer.withMemoryRebound(to: NominalTypeDescriptor.self, capacity: 1, { $0 })
     let numberOfField = Int(nominalType.pointee.numberOfFields)
     
-    
-    let int32NominalType = unsafeBitCast(nominalType, to: UnsafePointer<Int32>.self)
+    let int32NominalType = nominalType.withMemoryRebound(to: Int32.self, capacity: 1, { $0 })
     let fieldBase = int32NominalType.advanced(by: Int(nominalType.pointee.FieldOffsetVectorOffset))
     
-    let int8FieldBasePointer = unsafeBitCast(fieldBase, to: UnsafePointer<Int8>.self)
+    let int8FieldBasePointer = fieldBase.withMemoryRebound(to: Int8.self, capacity: 1, { $0 })
     let fieldNamePointer = int8FieldBasePointer.advanced(by: Int(nominalType.pointee.fieldNames))
     
     let fieldNames = getFieldNames(pointer: fieldNamePointer, fieldCount: numberOfField)
     
-    let int32NominalFunc = unsafeBitCast(nominalType, to: UnsafePointer<Int32>.self).advanced(by: 4)
-    let nominalFunc = unsafeBitCast(int32NominalFunc, to: UnsafePointer<Int8>.self).advanced(by: Int(nominalType.pointee.getFieldTypes))
+    let int32NominalFunc = nominalType.withMemoryRebound(to: Int32.self, capacity: 1, { $0 }).advanced(by: 4)
+    
+    let nominalFunc = int32NominalFunc.withMemoryRebound(to: Int8.self, capacity: 1, { $0 }).advanced(by: Int(nominalType.pointee.getFieldTypes))
+    
     
     let fieldType = getType(pointer: nominalFunc, fieldCount: numberOfField)
     
@@ -99,7 +100,7 @@ private func nominalTypeOfStruct(typePointer: UnsafePointer<Struct>) -> ObjectMe
 private func getType(pointer nominalFunc: UnsafePointer<Int8>, fieldCount numberOfField: Int) -> [Any.Type]{
         
     let funcPointer = unsafeBitCast(nominalFunc, to: FieldsTypeAccessor.self)
-    let funcBase = funcPointer(unsafeBitCast(nominalFunc, to: UnsafePointer<Int>.self))
+    let funcBase = funcPointer(nominalFunc.withMemoryRebound(to: Int.self, capacity: 1, { $0 }))
     
     
     var types: [Any.Type] = []
@@ -122,21 +123,21 @@ private func getFieldNames(pointer: UnsafePointer<Int8>, fieldCount numberOfFiel
 
 private func nominalTypeOfClass(typePointer t: UnsafePointer<Struct>) -> ObjectMetadata{
     
-    let typePointer = unsafeBitCast(t, to: UnsafePointer<NominalTypeDescriptor.Class>.self)
+    let typePointer = t.withMemoryRebound(to: NominalTypeDescriptor.Class.self, capacity: 1, { $0 })
     return nominalTypeOf(pointer: typePointer)
     
 }
 
 private func nominalTypeOf(pointer typePointer: UnsafePointer<NominalTypeDescriptor.Class>) -> ObjectMetadata{
     
-    let intPointer = unsafeBitCast(typePointer, to: UnsafePointer<Int>.self)
+    let intPointer = typePointer.withMemoryRebound(to: Int.self, capacity: 1, { $0 })
     
     let typePointee = typePointer.pointee
     let superPointee = typePointee.super_
     
     var superObject: ObjectMetadata
     
-    if unsafeBitCast(typePointer.pointee.isa, to: Int.self) == 14 || unsafeBitCast(superPointee, to: Int.self) == 0{
+    if Int(bitPattern: typePointer.pointee.isa) == 14 || Int(bitPattern: superPointee) == 0{
         superObject = ObjectMetadata(kind: .ObjCClassWrapper, propertyNames: [], propertyTypes: [], propertyOffsets: [])
         return superObject
     }else{
@@ -146,25 +147,27 @@ private func nominalTypeOf(pointer typePointer: UnsafePointer<NominalTypeDescrip
     
     let nominalTypeOffset = (MemoryLayout<Int>.size == MemoryLayout<Int64>.size) ? 8 : 11
     let nominalTypeInt = intPointer.advanced(by: nominalTypeOffset)
-    
-    let nominalTypeint8 = unsafeBitCast(nominalTypeInt, to: UnsafePointer<Int8>.self)
+
+
+    let nominalTypeint8 = nominalTypeInt.withMemoryRebound(to: Int8.self, capacity: 1, { $0 })
     let des = nominalTypeint8.advanced(by: typePointee.Description)
     
-    let nominalType = unsafeBitCast(des, to: UnsafePointer<NominalTypeDescriptor>.self)
+    let nominalType = des.withMemoryRebound(to: NominalTypeDescriptor.self, capacity: 1, { $0 })
     
     let numberOfField = Int(nominalType.pointee.numberOfFields)
     
-    let int32NominalType = unsafeBitCast(nominalType, to: UnsafePointer<Int32>.self)
+    let int32NominalType = nominalType.withMemoryRebound(to: Int32.self, capacity: 1, { $0 })
     let fieldBase = int32NominalType.advanced(by: 3)//.advanced(by: Int(nominalType.pointee.FieldOffsetVectorOffset))
     
-    let int8FieldBasePointer = unsafeBitCast(fieldBase, to: UnsafePointer<Int8>.self)
+    let int8FieldBasePointer = fieldBase.withMemoryRebound(to: Int8.self, capacity: 1, { $0 })
     let fieldNamePointer = int8FieldBasePointer.advanced(by: Int(nominalType.pointee.fieldNames))
     
     let fieldNames = getFieldNames(pointer: fieldNamePointer, fieldCount: numberOfField)
     superObject.propertyNames.append(contentsOf: fieldNames)
     
-    let int32NominalFunc = unsafeBitCast(nominalType, to: UnsafePointer<Int32>.self).advanced(by: 4)
-    let nominalFunc = unsafeBitCast(int32NominalFunc, to: UnsafePointer<Int8>.self).advanced(by: Int(nominalType.pointee.getFieldTypes))
+    let int32NominalFunc = nominalType.withMemoryRebound(to: Int32.self, capacity: 1, { $0 }).advanced(by: 4)
+    
+    let nominalFunc = int32NominalFunc.withMemoryRebound(to: Int8.self, capacity: 1, { $0 }).advanced(by: Int(nominalType.pointee.getFieldTypes))
     
     let fieldType = getType(pointer: nominalFunc, fieldCount: numberOfField)
     superObject.propertyTypes.append(contentsOf: fieldType)

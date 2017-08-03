@@ -85,7 +85,7 @@ class NumericalConvertTests: XCTestCase {
         XCTAssertEqual(boolInt10, true)
         
         let v = Optional<Bool>.none.serializedValue()
-        //XCTAssertEqual(nil, v)
+        XCTAssertNil(v)
         
         
         let boolDic: [String : Any] = ["bool" : 0]
