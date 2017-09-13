@@ -8,33 +8,9 @@
 
 import Foundation
 
-protocol NumericalMapping: ValueMapping, Initializable, Updatable {
-    init?(_ text: String)
-}
+protocol NumericalMapping: ValueMapping, Initializable, Updatable {}
 
-extension NumericalMapping{
-    
-
-}
-
-
-protocol NumericalRadixMapping{
-    init?(_ text: String, radix: Int)
-}
-
-extension NumericalMapping where Self: NumericalRadixMapping{
-    init?(_ text: String){
-        let result = Self.init(text, radix: 10)
-        guard let r = result else{
-            return nil
-        }
-        self = r
-    }
-}
-
-
-
-extension Bool: NumericalMapping{
+extension Bool: NumericalMapping {
     
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
@@ -58,7 +34,7 @@ extension Bool: NumericalMapping{
     }
 }
 
-extension Int8: NumericalMapping, NumericalRadixMapping{
+extension Int8: NumericalMapping {
     
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
@@ -71,7 +47,7 @@ extension Int8: NumericalMapping, NumericalRadixMapping{
     }
 }
 
-extension Int: NumericalMapping, NumericalRadixMapping{
+extension Int: NumericalMapping {
     
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
@@ -84,7 +60,7 @@ extension Int: NumericalMapping, NumericalRadixMapping{
     }
 }
 
-extension UInt8: NumericalMapping, NumericalRadixMapping{
+extension UInt8: NumericalMapping {
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
             return exactValue.uint8Value
@@ -96,7 +72,7 @@ extension UInt8: NumericalMapping, NumericalRadixMapping{
     }
 }
 
-extension Int16: NumericalMapping, NumericalRadixMapping{
+extension Int16: NumericalMapping {
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
             return exactValue.int16Value
@@ -108,7 +84,7 @@ extension Int16: NumericalMapping, NumericalRadixMapping{
     }
 }
 
-extension UInt16: NumericalMapping, NumericalRadixMapping{
+extension UInt16: NumericalMapping {
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
             return exactValue.uint16Value
@@ -120,7 +96,7 @@ extension UInt16: NumericalMapping, NumericalRadixMapping{
     }
 }
 
-extension Int32: NumericalMapping, NumericalRadixMapping{
+extension Int32: NumericalMapping {
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
             return exactValue.int32Value
@@ -132,7 +108,7 @@ extension Int32: NumericalMapping, NumericalRadixMapping{
     }
 }
 
-extension UInt32: NumericalMapping, NumericalRadixMapping{
+extension UInt32: NumericalMapping {
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
             return exactValue.uint32Value
@@ -144,7 +120,7 @@ extension UInt32: NumericalMapping, NumericalRadixMapping{
     }
 }
 
-extension Int64: NumericalMapping, NumericalRadixMapping{
+extension Int64: NumericalMapping {
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
             return exactValue.int64Value
@@ -156,7 +132,7 @@ extension Int64: NumericalMapping, NumericalRadixMapping{
     }
 }
 
-extension UInt64: NumericalMapping, NumericalRadixMapping{
+extension UInt64: NumericalMapping {
     public static func mappingWith(any: Any?) -> Any? {
         if let exactValue = any as? NSNumber{
             return exactValue.uint64Value
