@@ -4,7 +4,9 @@
 </p>
 
 
-[![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://swift.org)
+[![Swift](https://img.shields.io/badge/Swift-3.0+-orange.svg?style=flat)](https://swift.org)
+[![Swift](https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat)](https://swift.org)
+
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/MappingAce.svg)](https://img.shields.io/cocoapods/v/MappingAce.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://tldrlegal.com/license/mit-license)
@@ -37,12 +39,12 @@ MappingAce allows rapid creation of struct , Swift class, OC class . Automatic t
 
 // It is recommend to implement protocol `Mapping`, and just implement `Mapping`, no more works
 struct PhoneNumber: Mapping{
-	var tel: String
-	var type: String
+    var tel: String
+    var type: String
 }
 
 let phoneInfo: [String : Any] = [
-	"tel": "186xxxxxxxx",
+    "tel": "186xxxxxxxx",
     "type": "work"
 ]
 let phone = PhoneNumber(fromDic: phoneInfo)
@@ -54,8 +56,8 @@ print(phone.type) //"work"
 
 // Struct did not implement the `Mapping` protocol
 struct PhoneNumber {
-	var tel: String
-	var type: String
+    var tel: String
+    var type: String
 }
 
 let phone = MappingAny(type: PhoneEntity.self, fromDic: phoneInfo)
@@ -203,6 +205,13 @@ print(toDic) // ["type": "work", "tel": "186xxxxxxxx"]
 
 ## Installation
 
+| swift version | framework version |
+| - | - |
+| 3.0 | 1.0.2 |
+| 3.1 | 1.0.3 |
+| 4.0 | 1.0.4 |
+
+
 ### Installation with CocoaPods
 
 #### Podfile
@@ -214,9 +223,10 @@ To integrate MappingAce into your Xcode project using CocoaPods, specify it in y
 platform :ios, '8.0'
 
 target 'TargetName' do
-pod 'MappingAce', '~> 1.0.1'
+pod 'MappingAce', '~> 1.0.3'
 end
 ```
+
 
 Then, run the following command:
 
@@ -228,7 +238,7 @@ $ pod install
 To integrate MappingAce into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "IcyButterfly/MappingAce" ~> 1.0.1
+github "IcyButterfly/MappingAce" ~> 1.0.3
 ```
 
 Run `carthage` to build the framework and drag the built `MappingAce.framework` into your Xcode project.

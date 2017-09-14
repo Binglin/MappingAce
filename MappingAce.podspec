@@ -9,13 +9,13 @@
 Pod::Spec.new do |s|
 
   s.name         = "MappingAce"
-  s.version      = "1.0.2"
+  s.version      = "1.0.4"
   s.summary      = "MappingAce is Tool about JSON <-> Model"
 
 
   s.description  = "MappingAce allows rapid creation of struct , Swift class, OC class . Automatic transform dictionary to model(model could be struct), forget to manually write property mapping code"
 
-  s.homepage     = "https://github.com/IcyButterfly/MappingAce"
+  s.homepage     = "https://github.com/Binglin/MappingAce"
 
   s.license      = "MIT"
 
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"
 
-  s.source       = { :git => "https://github.com/IcyButterfly/MappingAce.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/Binglin/MappingAce.git", :tag => "#{s.version}" }
   s.source_files  = "MappingAce/*.swift"
 
 
