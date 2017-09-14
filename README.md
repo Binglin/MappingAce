@@ -4,7 +4,9 @@
 </p>
 
 
-[![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)](https://swift.org)
+[![Swift](https://img.shields.io/badge/Swift-3.0+-orange.svg?style=flat)](https://swift.org)
+[![Swift](https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat)](https://swift.org)
+
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/MappingAce.svg)](https://img.shields.io/cocoapods/v/MappingAce.svg)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://tldrlegal.com/license/mit-license)
@@ -202,6 +204,13 @@ print(toDic) // ["type": "work", "tel": "186xxxxxxxx"]
 
 
 ## Installation
+
+| swift version | framework version |
+| - | - |
+| 3.0 | 1.0.2 |
+| 3.1 | 1.0.3 |
+| 4.0 | 1.0.4 |
+
 
 ### Installation with CocoaPods
 
